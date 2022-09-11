@@ -1,0 +1,255 @@
+﻿@model Helpdesk.Core.ViewModels.Dashboard.RequestResponseViewModel
+
+@using Microsoft.AspNetCore.Http
+@{
+    ViewBag.Title = "Përgjigjja e kërkesës";
+}
+
+<table class="table">
+    <tbody>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.NID)</th>
+            <td>@Html.DisplayFor(model => model.NID)</td>
+
+        </tr>
+        <tr>
+            <th> @Html.DisplayNameFor(model => model.FirstName)</th>
+            <td> @Html.DisplayFor(model => model.FirstName)</td>
+
+        </tr>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Surname)</th>
+            <td>@Html.DisplayFor(model => model.Surname)</td>
+
+        </tr>
+        <tr>
+            <th> @Html.DisplayNameFor(model => model.Email)</th>
+            <td> @Html.DisplayFor(model => model.Email)</td>
+
+        </tr>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Telephone_Nr)</th>
+            <td>@Html.DisplayFor(model => model.Telephone_Nr)</td>
+
+        </tr>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Category)</th>
+            <td>@Html.DisplayFor(model => model.Category)</td>
+
+        </tr>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Program)</th>
+            <td>@Html.DisplayFor(model => model.Program)</td>
+
+        </tr>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Title)</th>
+            <td>@Html.DisplayFor(model => model.Title)</td>
+
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Descriptions)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.Descriptions)
+            </td>
+
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Reception_Date)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.Reception_Date)
+            </td>
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Document_Name)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.Document_Name)
+            </td>
+
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Document_Content)
+            </th>
+            <td>
+                <a class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray download-doc" style=" width: 40px; padding: 0 !important;text-align:center"
+                   aria-label="Download" href="@Url.Action("DownloadFile", "Dashboard", new { id = @Context.Session.GetInt32("Request_id").ToString() })">
+
+
+                    <svg class="w-5 h-5"
+                         aria-hidden="true"
+                         fill="currentColor"
+                         viewBox="0 0 489 489">
+                        <path d="M329.2,327.2c-4.5,0-8.1,3.4-8.6,7.9c-3.9,38.6-36.5,68.7-76.2,68.7c-39.6,0-72.2-30.1-76.2-68.7
+                c-0.5-4.4-4.1-7.9-8.6-7.9h-104c-21.8,0-39.5,17.7-39.5,39.5v82.8c0,21.8,17.7,39.5,39.5,39.5h377.8c21.8,0,39.5-17.7,39.5-39.5
+                v-82.7c0-21.8-17.7-39.5-39.5-39.5H329.2V327.2z" clip-rule="evenodd" />
+                        <path d="M303.5,198.6l-30.9,30.9V28.1C272.6,12.6,260,0,244.5,0l0,0c-15.5,0-28.1,12.6-28.1,28.1v201.4l-30.9-30.9
+                c-9.5-9.5-24.7-11.9-35.9-4.4c-15.3,10.2-16.8,31.1-4.5,43.4l82.8,82.8c9.2,9.2,24.1,9.2,33.3,0l82.8-82.8
+                c12.3-12.3,10.8-33.2-4.5-43.4C328.2,186.6,313,189,303.5,198.6z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </td>
+
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Responsible)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.Responsible)
+            </td>
+
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Registration_Date)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.Registration_Date)
+            </td>
+
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Completion_Date)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.Completion_Date)
+            </td>
+
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Current_Status)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.Current_Status)
+            </td>
+
+        </tr>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Communication_Channel)
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.Communication_Channel)
+            </td>
+
+        </tr>
+
+    </tbody>
+</table>
+
+@using (Html.BeginForm("Response", "Dashboard", FormMethod.Post, new { @id = "ResponseForm", enctype = "multipart/form-data" })) //onsubmit = "return validateForm()"
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Response_Content, htmlAttributes: new { @class = "control-label" })<span class="reqired_star" style="color:red"> * </span>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Response_Content, new { htmlAttributes = new { @onblur = "this.value = trim(this.value);", @maxlength = "1000", autocomplete = "off", @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" } })
+                @Html.ValidationMessageFor(model => model.Response_Content, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Response_Date, htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Response_Date, new { htmlAttributes = new { @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" } })
+                @Html.ValidationMessageFor(model => model.Response_Date, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Ruaj" id="SaveResponse" style="width:150px;margin:auto" class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" />
+            </div>
+        </div>
+    </div>
+
+
+}
+
+<div id="shikoListen" style="width:150px;margin-left: 10px;">
+    @Html.ActionLink("Shiko listën", "Index", "Dashboard", null,
+    new { @class = "block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-purple transition-colors duration-150 bg-transparent-600 border border-purple rounded-lg active:bg-purple-600 hover:bg-purple-600 focus:outline-none focus:shadow-outline-purple" })
+</div>
+
+<style>
+    .col-md-10 {
+        max-width: 100%;
+        padding-left: 10px !important;
+    }
+    a:hover {
+        text-decoration: none;
+        color: #7E3AF2
+    }
+</style>
+<script>
+    //funksioni qe ben disable fushat e pergjigjes dhe butonin nqs eshte shtuar nje pergjigje ne databaza
+    $(document).ready(function () {
+        var Response_Content = $("#Response_Content");
+        var Response_Date = $("#Response_Date")
+
+        if ($("#Response_Content").val()) {
+            Response_Content.attr('disabled', 'disabled');
+            Response_Content.css('background', '#efefef');
+            Response_Date.attr('disabled', 'disabled');
+            Response_Date.css('background', '#efefef');
+            $("#SaveResponse").hide();
+        }
+    });
+
+    //$("table tr").each(function () {
+    //    //if ($("tr").find("td.Request_Status:contains('Përfunduar')") {
+    //    var data = $(this).find("th:contains('Dokumenti')").html();
+    //    if (data) {
+    //        var download = $(this).find(".download-doc");
+
+    //        download.removeAttr('href');
+    //        download.css('color', 'gray');
+
+
+    //    }
+
+
+    //});
+
+    $("#SaveResponse").on("click", function (e) {
+        e.preventDefault();
+
+        swal({
+            title: "Sukses!",
+            text: "Përgjigjja e kërkesës u ruajt!",
+            icon: "success",
+
+        }).then(function (confirm) {
+            if (confirm) {
+                $('#ResponseForm').submit();
+            }
+        });
+    });
+
+    function trim(str) {
+
+        return str.replace(/^\s+/g, '').trim();
+    }
+</script>
+<style>
+    .swal-button--confirm:hover {
+        background-color: #9155f7 !important
+    }
+
+    .swal-button--confirm {
+        background-color: #7E3AF2 !important
+    }
+</style>

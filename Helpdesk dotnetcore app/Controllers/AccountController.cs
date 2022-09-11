@@ -1,7 +1,12 @@
 ﻿using Helpdesk.Core.Interfaces;
 using Helpdesk.Core.ViewModels.Account;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,21 +46,47 @@ namespace Helpdesk.Controllers
 
                 if (user != null)
                 {
-                    Identity id = new Identity(user.Id, user.Username, string.Join(",", user.Roles));
+                    //Identity id = new Identity(user.Id, user.Username, string.Join(",", user.Roles));
 
-                    DateTime expire = DateTime.Now.AddMinutes(FormsAuthentication.Timeout.TotalMinutes);
+                    //DateTime expire = DateTime.Now.AddMinutes(FormsAuthentication.Timeout.TotalMinutes);
 
-                    FormsAuthenticationTicket ticket = new FormsAuthenticationTicket
-                        (user.Id, user.Username, DateTime.Now, expire, false, id.GetUserData());
+                    //FormsAuthenticationTicket ticket = new FormsAuthenticationTicket
+                    //    (user.Id, user.Username, DateTime.Now, expire, false, id.GetUserData());
 
-                    string hashTicket = FormsAuthentication.Encrypt(ticket);
-                    HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, hashTicket);
-                    HttpContext.Response.Cookies.Add(cookie);
+                    //string hashTicket = FormsAuthentication.Encrypt(ticket);
+                    //HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, hashTicket);
+                    //HttpContext.Response.Cookies.Add(cookie);
 
-                    //add session
-                    Session["FullName"] = user.FirstName + " " + user.Surname;
-                    Session["Username"] = user.Username;
-                    Session["ID"] = user.Id;
+                    ////add session
+                    //Session["FullName"] = user.FirstName + " " + user.Surname;
+                    //Session["Username"] = user.Username;
+                    //Session["ID"] = user.Id;
+                    //return RedirectToAction("Index", "Dashboard");
+
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, user.Username),
+                        new Claim("FullName", user.FirstName + " " + user.Surname),
+                        new Claim("Username", user.Username),
+                        new Claim("ID", user.Id.ToString()),
+                    };
+
+                    var claimsIdentity = new ClaimsIdentity(
+                        claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    var authProperties = new AuthenticationProperties
+                    {
+                    };
+
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity),
+                        authProperties);
+
+                    HttpContext.Session.SetString("FullName", user.FirstName + " " + user.Surname);
+                    HttpContext.Session.SetString("Username", user.Username);
+                    HttpContext.Session.SetInt32("ID", user.Id);
+
                     return RedirectToAction("Index", "Dashboard");
                 }
                 else
@@ -109,18 +140,23 @@ namespace Helpdesk.Controllers
         }
 
         //[ValidateAntiForgeryToken]
-        public ActionResult LogOut()
+        public async Task<ActionResult> LogOutAsync()
         {
-            if (Request.Cookies[FormsAuthentication.FormsCookieName] != null)
-            {
-                var c = new HttpCookie(FormsAuthentication.FormsCookieName)
-                {
-                    Expires = DateTime.Now.AddDays(-1)
-                };
-                Response.Cookies.Add(c);
-            }
-            Session.Clear();
-            FormsAuthentication.SignOut();
+            //if (Request.Cookies[FormsAuthentication.FormsCookieName] != null)
+            //{
+            //    var c = new HttpCookie(FormsAuthentication.FormsCookieName)
+            //    {
+            //        Expires = DateTime.Now.AddDays(-1)
+            //    };
+            //    Response.Cookies.Add(c);
+            //}
+            //Session.Clear();
+            //FormsAuthentication.SignOut();
+
+            // Clear the existing external cookie
+            await HttpContext.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme);
+
             return RedirectToAction("Login", "Account");
         }
 

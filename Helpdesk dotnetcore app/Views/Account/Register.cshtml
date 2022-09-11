@@ -1,0 +1,95 @@
+﻿@model Helpdesk.Core.ViewModels.Account.AccountViewModel.Register
+@{
+    ViewBag.Title = "Register";
+}
+@{
+    Layout = null;
+}
+
+@*fillim i layout*@
+
+<!DOCTYPE html>
+<html>
+@*:class="{ 'theme-dark': dark }" x-data="data()" lang="en"*@
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create account - Helpdesk Dashboard</title> <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <link href="~/Content/tailwind.output.css" rel="stylesheet" />
+    <script type="text/javascript" src="~/Scripts/init-alpine.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+
+    <script src='~/Scripts/datepicker-sq.js' type='text/javascript'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+</head>
+<body>
+    <div class="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
+        <div class="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
+            <div class="flex flex-col overflow-y-auto md:flex-row">
+                <div class="h-32 md:h-auto md:w-1/2">
+                    <img aria-hidden="true"
+                         class="object-cover w-full h-full dark:hidden"
+                         src="~/Content/Images/foto login.jpg"
+                         alt="Office" />
+                    <img aria-hidden="true"
+                         class="hidden object-cover w-full h-full dark:block"
+                         src="~/Content/Images/foto login.jpg"
+                         alt="Office" />
+                </div>
+                <div class="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
+                    <div class="w-full">
+                        <h1 class="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
+                            Krijo një llogari të re
+                        </h1>
+                        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Username, new { @class = "text-sm text-gray-700 dark:text-gray-400" })
+                                @Html.TextBoxFor(m => m.Username, new { @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" })
+                                @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-sm text-danger" })
+
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Password, new { @class = "text-sm text-gray-700 dark:text-gray-400" })
+                                @Html.PasswordFor(m => m.Password, new { @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" })
+                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-sm text-danger" })
+
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "text-sm text-gray-700 dark:text-gray-400" })
+                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" })
+                                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-sm text-danger" })
+
+                            </div>
+
+                            <div class="form-group">
+                                <input type="submit" value="Krijo llogarinë" class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" />
+                            </div>
+                            <hr class="my-8" />
+
+                            <div class="text-sm alert alert-danger" role="alert" style="color:red">
+                                <p>@ViewBag.error</p>
+                            </div>
+
+                            <p class="mt-4">
+                                @Html.ActionLink("Ke një llogari ekzistuese? Hyr", "Login", "Account", null,
+                               new { @class = "text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline" })
+                            </p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

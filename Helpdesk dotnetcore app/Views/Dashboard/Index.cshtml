@@ -1,0 +1,514 @@
+﻿@model IEnumerable<Helpdesk.Core.ViewModels.Dashboard.RequestViewModel>
+
+@using Microsoft.AspNetCore.Http
+
+
+@*@{
+    ViewBag.Title = "Kerkesa " + ViewContext.RouteData.Values["Status"];
+}*@
+@if(ViewContext.RouteData.Values["Status"]=="Registered")
+{
+    ViewBag.Title = "Registered requests";
+}
+else if(ViewContext.RouteData.Values["Status"] == "Completed")
+{
+    ViewBag.Title = "Completed requet";
+
+}
+else if(ViewContext.RouteData.Values["Status"] == "Në proces")
+{
+    ViewBag.Title = "Kërkesa në proces";
+
+}
+else
+{
+    ViewBag.Title = "Lista e kërkesave";
+    <h1>Kerkesa</h1>
+
+}
+
+@*<div class="Username">
+        @if (HttpContext.Current.Session["ID"] != null && HttpContext.Current.Session["Username"] != null)
+        {
+            <h4>@Session["Username"]</h4>
+        }
+    </div>*@
+@*<p>
+        @Html.ActionLink("Create New", "Create")
+    </p>*@
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css" integrity="sha256-T+WBw5FjB+EH6bPuRH8flbu+aOS9AAnRzhO0vZWhdng=" crossorigin="anonymous" />
+
+    <style>
+        #Request_List thead {
+            color: #707275;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        #Request_List tbody td {
+            padding: 14px 10px;
+            color: #24262D;
+            font-family: 'Inter';
+            font-size: 14.5px;
+            border-bottom: 1px solid #d7d7d7;
+            text-align:center
+        }
+
+        table.dataTable.no-footer {
+            border: none
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+            background: #7E3AF2;
+            border-radius: 10px !important;
+            color: white !important
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.2em 0.7em !important
+        }
+
+            .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+                background: #7E3AF2;
+                border-radius: 10px !important;
+                color: white !important;
+                border: 1px solid #979797;
+            }
+
+        #Request_List_wrapper {
+            padding: 20px
+        }
+
+        a {
+            color: #6e6a6a;
+        }
+
+            a:hover {
+                text-decoration: none;
+                color: #7e3af2 !important
+            }
+
+        ul {
+            margin-bottom: 0 !important;
+        }
+        .btn-success {
+            color: #fff;
+            background-color: #7E3AF2;
+             border-color: transparent;
+        }
+        .btn-success:active {
+            color: #fff!important;
+            background-color: #8648f1!important;
+            border-color: transparent!important;
+            border:none!important
+        }
+            .btn-success:hover, .btn-success:enabled, .btn-success:focus, .btn-success:visited {
+                color: #fff !important;
+                background-color: #8648f1!important;
+                border-color: transparent!important;
+            }
+        a.menu-link:active, a.menu-link:focus {
+            color: #7E3AF2 !important;
+        }
+
+        a.menu-link.visited {
+            color: #7E3AF2 !important;
+        }
+        .swal-button--confirm:hover {
+            background-color: #9155f7!important
+        }
+        .swal-button--confirm {
+            background-color: #7E3AF2!important
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+    <table class="table1" id="Request_List">
+        <thead>
+            <tr>
+                <th>
+                    Nr.
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Client.FirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RequestType.Category)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Reception_Date)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Completion_Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Current_Status)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+
+            <tr id="row_@item.Id">
+                <td style=" text-align: right; "> </td>
+                @*@(rowNo += 1)*@
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Client.FirstName)
+                        @Html.DisplayFor(modelItem => item.Client.Surname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RequestType.Category)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Reception_Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Completion_Date)
+                    </td>
+                    <td class="Request_Status">
+                        @Html.DisplayFor(modelItem => item.Current_Status)
+                    </td>
+
+                    <td>
+
+                        <div class="actions" style="display:-webkit-inline-box">
+                            @if (Context.User.IsInRole("Operator"))
+                            {
+
+                                <a class="edit-btn flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
+                                   aria-label="Edit" id="EditBtn" href="@Url.Action("Edit", "Dashboard", new { id = item.Id })" title="Modifiko">
+                                    <svg class="w-5 h-5"
+                                         aria-hidden="true"
+                                         fill="currentColor"
+                                         viewBox="0 0 20 20">
+                                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                                    </svg>
+                                </a>
+                            }
+                            else if (Context.User.IsInRole("Pergjegjes"))
+
+                            {
+                                <a class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray edit-btn"
+                                   aria-label="Edit" href="@Url.Action("Response", "Dashboard", new { id = item.Id })" title="Modifiko">
+                                    <svg class="w-5 h-5"
+                                         aria-hidden="true"
+                                         fill="currentColor"
+                                         viewBox="0 0 20 20">
+                                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                                    </svg>
+                                </a>
+                            }
+                            <a class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray download-btn"
+                               aria-label="Download" href="@Url.Action("DownloadFile", "Dashboard", new { id = item.Id })" title="Shkarko">
+
+
+                                <svg class="w-5 h-5"
+                                     aria-hidden="true"
+                                     fill="currentColor"
+                                     viewBox="0 0 489 489">
+                                    <path d="M329.2,327.2c-4.5,0-8.1,3.4-8.6,7.9c-3.9,38.6-36.5,68.7-76.2,68.7c-39.6,0-72.2-30.1-76.2-68.7
+                c-0.5-4.4-4.1-7.9-8.6-7.9h-104c-21.8,0-39.5,17.7-39.5,39.5v82.8c0,21.8,17.7,39.5,39.5,39.5h377.8c21.8,0,39.5-17.7,39.5-39.5
+                v-82.7c0-21.8-17.7-39.5-39.5-39.5H329.2V327.2z" clip-rule="evenodd" />
+                                    <path d="M303.5,198.6l-30.9,30.9V28.1C272.6,12.6,260,0,244.5,0l0,0c-15.5,0-28.1,12.6-28.1,28.1v201.4l-30.9-30.9
+                c-9.5-9.5-24.7-11.9-35.9-4.4c-15.3,10.2-16.8,31.1-4.5,43.4l82.8,82.8c9.2,9.2,24.1,9.2,33.3,0l82.8-82.8
+                c12.3-12.3,10.8-33.2-4.5-43.4C328.2,186.6,313,189,303.5,198.6z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                            <a class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray delete-btn"
+                               aria-label="Delete" id="Delete" onclick="ConfirmDelete(@item.Id)" href="#" title="Fshij">
+                                @*data-toggle="modal" data-target="#myModal"*@
+
+                                <svg class="w-5 h-5"
+                                     aria-hidden="true"
+                                     fill="currentColor"
+                                     viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                          clip-rule="evenodd"></path>
+                                </svg>
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+            }
+
+
+        </tbody>
+    </table>
+
+
+
+    @*hidden field for storing current  request Id*@
+                <input type="hidden" id="hiddenId" />
+
+                @if (Context.User.IsInRole("Operator"))
+{
+                    <input type="hidden" id="UserRole" value="1" />
+}
+
+</body>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Fshi kërkesë</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4>Jeni të sigurt që doni ta fshini këtë kërkesë?</h4>
+
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal">Anullo</a>
+                <a href="#" class="btn btn-success" onclick="Delete()">Konfirmo</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<input type="hidden" value="@ViewBag.edit" id="editReqId"/>
+
+@section scripts{
+
+
+    <script>
+        //    var ConfirmDelete = function (Id) {
+        //        //var Request_Id = $("#hiddenId").val();
+
+        //        // e.preventdefault();
+        //        $("#hiddenId").val(Id);
+
+        //        $("#mymodal").modal('show');
+        //}
+
+        var ConfirmDelete = function (Id) {
+            //var Request_Id = $("#hiddenId").val();
+
+            // e.preventdefault();
+            $("#hiddenId").val(Id);
+
+            swal({
+                title: "Fshi kërkesë",
+                text: "Jeni të sigurt që doni ta fshini këtë kërkesë?",
+                confirmButtonColor: "#7E3AF2",
+                icon: "warning",
+                dangerMode: true,
+                buttons: ["Anullo", "Konfirmo"],
+
+            }).then((result) => {
+                if (result) {
+                    Delete();
+                    swal("Kërkesa u fshi me sukses!", {
+                        icon: "success",
+                    });
+                }
+            })
+        }
+
+
+
+
+        var Delete = function () {
+
+            var Request_Id = $("#hiddenId").val();
+            var table = $('#Request_List').DataTable();
+
+            $.ajax({
+
+                type: "POST",
+                url: "/Dashboard/DeleteConfirmed",
+                datatype: "json",
+                traditional: true,
+                data: { id: Request_Id },
+                success: function (result) {
+                    table.row($("#row_" + Request_Id)).remove().draw(false);
+
+
+                }
+
+            })
+
+        }
+        //$(document).ready(function () {
+
+        //   // var table = $('#Request_List').DataTable();
+
+        //    var reqid = document.getElementById("editReqId");
+        //    if (reqid.value != null || reqid.value != '') {
+        //        //table.row($("#row_" + reqid)).css('background-color', 'red');
+        //        $("#row_" + reqid).css('color', 'red');
+
+        //    }
+        //});
+    </script>
+
+    <script>
+
+        $(document).ready(function () {
+            var table = $('#Request_List').DataTable({
+                "language": {
+                    "lengthMenu": "Display _MENU_ records per page",
+                    "zeroRecords": "Nuk u gjet asnjë e dhënë",
+                    "info": "Shfaqur nga _START_ në _END_ nga _TOTAL_ rekorde",
+                    "search": "<i class='fa fa- search'></i>",
+                    "searchPlaceholder": "Kërko...",
+                    "infoEmpty": "Nuk u gjet asnjë e dhënë",
+                    "infoFiltered": "(filtruar nga _MAX_ total rekorde)",
+                    "loadingRecords": "Duke ngarkuar...",
+                    "processing": "Duke procesuar...",
+                    "columnDefs": [
+                        {
+                            "searchable": false,
+                            "orderable": false,
+                            "targets": 0
+                        }
+                    ],
+                    "order": [
+                        [1, 'asc']
+                    ],
+                    "lengthMenu": "Shfaq _MENU_ rekorde në faqe",
+                    "paginate":
+                    {
+                        "first": "E para",
+                        "last": "E fundit",
+                        "next": ">",
+                        "previous": "<"
+                    }
+                },
+
+            });
+            table.on('order.dt search.dt', function () { //funksioni qe ben numerimin e rreshtave ne kolonen e pare te tabeles
+                table.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            }).draw();
+                 var reqid = document.getElementById("editReqId");
+            if (reqid.value != null || reqid.value != '') {
+                //table.row($("#row_" + reqid)).css('background-color', 'red');
+                $("#row_" + reqid.value).addClass('selected');
+
+                /*table.row($("#row_" + reqid.value)).addClass('selected');*/
+
+
+            }
+
+
+        });
+
+
+        //funksioni qe ben disable gjithe actions e nje kerkese ne rast se statusi i kerkeses eshte  'Perfunduar'
+        $("#Request_List tr").each(function () {
+            //if ($("tr").find("td.Request_Status:contains('Përfunduar')") {
+            var data = $(this).find("td.Request_Status:contains('Përfunduar')").html();
+            if (data) {
+
+                if ($("#UserRole").val() == 1) {
+                    var edit = $(this).find(".edit-btn");
+                    var del = $(this).find(".delete-btn");
+                    var download = $(this).find(".download-btn");
+                    edit.removeAttr('href');
+                    edit.css('color', 'gray');
+                    del.css('color', 'gray');
+                    del.removeAttr('href');
+                    del.prop("onclick", null);
+                    download.removeAttr('href');
+                    download.css('color', 'gray');
+                    download.on("mouseover", function () {
+                        $(this).css("color", "gray");
+                    });
+                    del.on("mouseover", function () {
+                        $(this).css('color', 'gray');
+                    });
+                    edit.on("mouseover", function () {
+                        $(this).css('color', 'gray');
+                    });
+
+
+                }
+            }
+
+
+        });
+
+        //funksioni i shkarkimit te file
+        //$("a.download-btn").click(function () {
+        //    var Request_Id = $("#hiddenId").val();
+
+        //    $.ajax({
+
+        //        type: "POST",
+        //        url: "/Dashboard/DownloadFile",
+        //        datatype: "json",
+        //        traditional: true,
+        //        data: { id: Request_Id },
+        //        success: function (result) {
+
+        //            $("#myModal").modal("hide");
+        //            $(".show").hide();
+
+        //        }
+
+        //    })
+
+        //    });
+
+        //  $(document).ready(function () {
+        //$('li').click(function () {
+        //    $(this).css({ 'color': '#7E3AF2' });
+        //    $(this).css('background-color', 'gray');
+        //    $(this).addClass("active");
+        //});
+       //set the currentPage variable
+        var currentPage = "Index";
+        var url = window.location.href;
+        var split = url.split("status=");
+        var currentURL = split[1];
+        if (currentURL == "Regjistruar") {
+            document.getElementById('regj').style.color = "#7E3AF2";
+            document.getElementById('regj').style.fontWeight = 700;
+        }
+        else if (currentURL == "N%C3%AB%20proces") {
+            document.getElementById('proc').style.color = "#7E3AF2";
+            document.getElementById('proc').style.fontWeight = 700;
+
+        }
+        else if (currentURL == "P%C3%ABrfunduar") {
+            document.getElementById('perf').style.color = "#7E3AF2";
+            document.getElementById('perf').style.fontWeight = 700;
+
+        }
+        else {
+            document.getElementById('dash').style.color = "#7E3AF2";
+            document.getElementById('dash').style.fontWeight = 700;
+
+
+        }
+
+    </script>
+}

@@ -1,0 +1,130 @@
+﻿@model Helpdesk.Core.ViewModels.Dashboard.RequestViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>HD_Request</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Descriptions)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Descriptions)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Reception_Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Reception_Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Document_Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Document_Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Document_Content)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Document_Content)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration_Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Registration_Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Completion_Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Completion_Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Current_Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Current_Status)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OperatorId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OperatorId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ResponsibleId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ResponsibleId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Client.NID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Client.NID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CommunicationChannel.CommunicationChannelValue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CommunicationChannel.CommunicationChannelValue)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Program.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Program.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RequestType.Category)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RequestType.Category)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

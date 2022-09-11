@@ -1,0 +1,156 @@
+﻿@model Helpdesk.Core.ViewModels.Dashboard.ClientRequestViewModel
+
+<div>
+    <h4>HD_Client_HD_Request_Model</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Surname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Surname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Telephone_Nr)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Telephone_Nr)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IDHD_Request_Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IDHD_Request_Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IDHD_Program)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IDHD_Program)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IDHD_Client)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IDHD_Client)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Descriptions)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Descriptions)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Reception_Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Reception_Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Document_Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Document_Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Document_Content)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Document_Content)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration_Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Registration_Date)
+        </dd>
+
+        @*<dt>
+            @Html.DisplayNameFor(model => model.Completion_Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Completion_Date)
+        </dd>*@
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Current_Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Current_Status)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IDHD_Operator)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IDHD_Operator)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IDHD_Responsible)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IDHD_Responsible)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IDHD_CommunicationChannel)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IDHD_CommunicationChannel)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.NID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

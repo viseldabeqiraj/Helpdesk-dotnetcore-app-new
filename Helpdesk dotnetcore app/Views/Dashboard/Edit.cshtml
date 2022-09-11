@@ -1,0 +1,761 @@
+﻿@model Helpdesk.Core.ViewModels.Dashboard.ClientRequestViewModel
+
+@{
+    ViewBag.Title = "Modifiko kërkesë";
+}
+
+
+@using (Html.BeginForm("Edit", "Dashboard", FormMethod.Post, new { @id = "CreateRequestForm", onsubmit = "return validateForm()", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr /> <br />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="tab">
+            <h2 style=" color: #7E3AF2;
+        text-align: center">
+                <b>Të dhënat e klientit</b>
+            </h2>
+            <div class="form-group">
+                @Html.LabelFor(model => model.NID, htmlAttributes: new { @class = "control-label" })<span class="reqired_star"> * </span>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.NID, new { htmlAttributes = new { @maxlength = "10", @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.NID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="error-msg" role="alert" id="NIDValidation" style="color:red"></div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label" })<span class="reqired_star"> * </span>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @onchange = "ValidateFirstname()", @maxlength = "20", @onblur = "this.value = trim(this.value);", @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" } })
+                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="error-msg" role="alert" id="NameValidation" style="color:red"></div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Surname, htmlAttributes: new { @class = "control-label" })<span class="reqired_star"> * </span>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @onchange = "ValidateSurname()", @maxlength = "20", @onblur = "this.value = trim(this.value);", @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" } })
+                    @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="error-msg" role="alert" id="SurnameValidation" style="color:red"></div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })<span class="reqired_star"> * </span>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @onchange = "ValidateEmail()", @maxlength = "80", @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="error-msg" role="alert" id="emailValidation" style="color:red"></div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Telephone_Nr, htmlAttributes: new { @class = "control-label" })<span class="reqired_star"> * </span>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Telephone_Nr, new { htmlAttributes = new { @onchange = "ValidateTelephone()", @maxlength = "15", @onkeyup = "this.value=this.value.replace(/[^0-9 .+-]/gi, '');", @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" } })
+                    @Html.ValidationMessageFor(model => model.Telephone_Nr, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="error-msg" role="alert" id="TelephoneValidation" style="color:red"></div>
+
+
+        </div>
+        <div class="tab">
+            <h3 style="color: #7E3AF2;text-align:center"><b>Të dhënat e kërkesës</b></h3>
+            <div class="form-group">
+                @Html.LabelFor(model => model.IDHD_Request_Type, htmlAttributes: new { @class = "control-label" })<span class="reqired_star"> * </span>
+                <div class="col-md-10">
+                    @Html.DropDownList("IDHD_Request_Type", null, new { @onchange = "RequestTypeValidation()", @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" })
+                    @Html.ValidationMessageFor(model => model.IDHD_Request_Type, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="error-msg" role="alert" id="RequestTypeValidation" style="color:red"></div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.IDHD_Program, htmlAttributes: new { @class = "control-label" })<span class="reqired_star"> * </span>
+                <div class="col-md-10">
+                    @Html.DropDownList("IDHD_Program", null, new { @onchange = "ProgramValidation()", @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" })
+                    @Html.ValidationMessageFor(model => model.IDHD_Program, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="error-msg" role="alert" id="ProgramValidation" style="color:red"></div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label" })<span class="reqired_star"> * </span>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @onchange = "TitleValidation()", @maxlength = "50", @onblur = "this.value = trim(this.value);", @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" } })
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="error-msg" role="alert" id="TitleValidation" style="color:red"></div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Descriptions, htmlAttributes: new { @class = "control-label" })<span class="reqired_star"> * </span>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Descriptions, new { htmlAttributes = new { @onchange = "DescriptionValidation()", @onblur = "this.value = trim(this.value);", @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" } })
+                    @Html.ValidationMessageFor(model => model.Descriptions, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="error-msg" role="alert" id="DescriptionValidation" style="color:red"></div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Reception_Date, htmlAttributes: new { @class = "control-label" })<span class="reqired_star"> * </span>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Reception_Date, new { htmlAttributes = new { @onchange = "ReceptionValidation()", @onkeyup = "ValidateDate(this.value)", @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" } })
+                    @Html.ValidationMessageFor(model => model.Reception_Date, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="error-msg" role="alert" id="ReceptionValidation" style="color:red"></div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Document_Name, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Document_Name, new { htmlAttributes = new { @onchange = "TextboxChange()", @onblur = "this.value = trim(this.value);", @maxlength = "50", @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" } })
+                    @Html.ValidationMessageFor(model => model.Document_Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Document_Content, htmlAttributes: new { @class = "control-label2" })
+                <div class="col-md-10 d-flex justify-content-start" id="FileDiv">
+                    <input type="button" id="ChooseFile" value="Zgjidh dokument" onclick="document.getElementById('RequestDocument').click();" style="width:180px;margin: 0!important;" class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-purple transition-colors duration-150 bg-transparent-600 border border-purple rounded-lg active:bg-purple-600 hover:bg-purple-600 focus:outline-none focus:shadow-outline-purple" />
+                    <input type="file" id="RequestDocument" name="RequestDocument" accept="application/pdf" style="display:none" />
+                    <label id="RequestDocument_Text"></label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Registration_Date, htmlAttributes: new { @class = "control-label" })<span class="reqired_star"> * </span>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Registration_Date, new { htmlAttributes = new { @onchange = "TextboxChange()", @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.Registration_Date, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="error-msg" role="alert" id="RegistrationValidation" style="color:red"></div>
+
+            <div>
+                @Html.HiddenFor(model => model.IDHD_Request)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.IDHD_Responsible, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-10">
+                    @Html.DropDownList("IDHD_Responsible", null, htmlAttributes: new { @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" })
+                    @*@Html.DropDownList("IDHD_Responsible", new SelectList(ViewBag.IDHD_Responsible, "IDHD_User", "User"), htmlAttributes: new { @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" })*@
+                    @Html.ValidationMessageFor(model => model.IDHD_Responsible, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Current_Status, htmlAttributes: new { @class = "control-label" })<span class="reqired_star"> * </span>
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.Current_Status, new SelectList(ViewBag.Status, "Text", "Value"), htmlAttributes: new { @onchange = "StatusValidation()", @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" })
+                    @Html.ValidationMessageFor(model => model.Current_Status, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="error-msg" role="alert" id="StatusValidation" style="color:red"></div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.IDHD_CommunicationChannel, htmlAttributes: new { @class = "control-label" })<span class="reqired_star"> * </span>
+                <div class="col-md-10">
+                    @Html.DropDownList("IDHD_CommunicationChannel", null,
+                  new { @onchange = "ChannelValidation()", @class = "block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" })
+                    @Html.ValidationMessageFor(model => model.IDHD_CommunicationChannel, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="error-msg" role="alert" id="ChannelValidation" style="color:red"></div>
+        </div>
+        <div class="alert alert-danger" role="alert" id="validationField" style="display:none;color:red">
+            Ju lutem plotesoni te gjitha fushat e seksionit!
+        </div>
+
+        <div style="overflow:auto;">
+            <div @*style="float:right;"*@>
+                <button type="button" id="prevBtn" onclick="nextPrev(-1)" class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-purple transition-colors duration-150 bg-transparent-600 border border-purple rounded-lg hover:bg-purple-600 focus:outline-none focus:shadow-outline-purple" style="float:left;padding-top: 10px;">Kthehu mbrapa</button>
+                <button type="button" id="nextBtn" onclick="nextPrev(1)" class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-purple transition-colors duration-150 bg-transparent-600 border border-purple rounded-lg hover:bg-purple-600 focus:outline-none focus:shadow-outline-purple" style="float:right;padding-top: 10px;">Vazhdo</button>
+                <input type="button" value="Ruaj" id="saveBtn" class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" />
+            </div>
+        </div>
+        @*<div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" />
+                </div>
+            </div>*@
+        <!-- Circles which indicates the steps of the form: -->
+        <div style="text-align:center;margin-top:40px;">
+            <span class="step"></span>
+            <span class="step"></span>
+        </div>
+    </div>
+
+}
+
+<div id="shikoListen" style="width:150px;">
+    @Html.ActionLink("Shiko listën", "Index", "Dashboard", null,
+    new { @class = "block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-purple transition-colors duration-150 bg-transparent-600 border border-purple rounded-lg active:bg-purple-600 hover:bg-purple-600 focus:outline-none focus:shadow-outline-purple" })
+</div>
+<input type="hidden" value="@ViewBag.requestID" id="requestID" />
+
+
+<script>
+    var request_type = document.getElementById("IDHD_Request_Type");
+    var program = document.getElementById("IDHD_Program");
+    var chanel = document.getElementById("IDHD_CommunicationChannel");
+    var email = document.getElementById("Email");
+    var NID = document.getElementById("NID");
+    var firstname = document.getElementById("FirstName");
+    var surname = document.getElementById("Surname");
+    var telephone = document.getElementById("Telephone_Nr");
+    var file = document.getElementById("RequestDocument");
+
+
+    var currentTab = 0; // Current tab is set to be the first tab (0)
+    showTab(currentTab); // Display the current tab
+
+    function showTab(n) {
+        // This function will display the specified tab of the form...
+        var x = document.getElementsByClassName("tab");
+        x[n].style.display = "block";
+        document.getElementById("saveBtn").style.display = "none";
+        //... and fix the Previous/Next buttons:
+        if (n == 0) {
+            document.getElementById("prevBtn").style.display = "none";
+        } else {
+            document.getElementById("prevBtn").style.display = "inline";
+        }
+        if (n == (x.length - 1)) {
+            //document.getElementById("nextBtn").innerHTML = "Shto";
+            document.getElementById("nextBtn").style.display = "none";
+            document.getElementById("saveBtn").style.display = "inline";
+            //if (document.getElementById("submitBtn").style.display == "inline") {
+            //    document.getElementById("nextBtn").style.display = "none";
+
+            //}
+
+        } else {
+            document.getElementById("nextBtn").innerHTML = "Vazhdo";
+            document.getElementById("nextBtn").style.display = "inline";
+
+        }
+        //run a function that will display the correct step indicator:
+        fixStepIndicator(n)
+    }
+
+    function nextPrev(n) {
+        // This function will figure out which tab to display
+        var x = document.getElementsByClassName("tab");
+        // Exit the function if any field in the current tab is invalid:
+        if (n == 1 && !validateForm()) return false;
+        // Hide the current tab:
+        x[currentTab].style.display = "none";
+        document.getElementById("validationField").style.display = "none";
+        document.getElementById("emailValidation").style.display = "none";
+        document.getElementById("NameValidation").style.display = "none";
+        document.getElementById("SurnameValidation").style.display = "none";
+        document.getElementById("NIDValidation").style.display = "none";
+
+
+
+        // Increase or decrease the current tab by 1:
+        currentTab = currentTab + n;
+        // if you have reached the end of the form...
+        if (currentTab >= x.length) {
+            return false;
+        }
+        // Otherwise, display the correct tab:
+        showTab(currentTab);
+    }
+
+
+
+    function validateForm() {
+        // This function deals with validation of the form fields
+        var x, y, i, valid = true;
+        x = document.getElementsByClassName("tab");
+        y = x[currentTab].getElementsByTagName("input[type=text]");
+
+        // A loop that checks every input field in the current tab:
+        for (i = 0; i < y.length; i++) {
+            // If a field is empty...
+            if (y[i].value == "" || !y[i].value.trim().length) {
+
+
+                if (document.getElementById("Document_Name") == y[i]) {
+                    continue;
+                }
+                if (document.getElementById("Completion_Date") == y[i]) {
+                    continue;
+                }
+                // add an "invalid" class to the field:
+                y[i].className += " invalid";
+                document.getElementById("validationField").style.display = "inline";
+
+
+                //request_type.className += "invalid";
+                // and set the current valid status to false
+                valid = false;
+                break;
+            }
+
+
+
+            //if (request_type.options[request_type.selectedIndex].value == "" && program.options[program.selectedIndex].value == "" && chanel.options[chanel.selectedIndex].value == "" && currentTab == 1) {
+            //    valid = false;
+            //    request_type.style.boxShadow = "rgb(255 119 119) 0px 0px 8px 0px";
+            //    program.style.boxShadow = "rgb(255 119 119) 0px 0px 8px 0px";
+            //    chanel.style.boxShadow = "rgb(255 119 119) 0px 0px 8px 0px";
+            //    //request_type.style.border = "none";
+            //}
+
+        }
+        if (!ValidateEmail() || !ValidateFirstname() || !ValidateSurname() || !ValidateTelephone())
+            valid = false;
+
+        // If the valid status is true, mark the step as finished and valid:
+        if (valid) {
+            displayAlert();
+            document.getElementsByClassName("step")[currentTab].className += " finish";
+        }
+        return valid; // return the valid status
+    }
+
+
+    function RequestTypeValidation() {
+        valid = true;
+
+        if (document.getElementById("IDHD_Request_Type").value == null || document.getElementById("IDHD_Request_Type").value == "") {
+            document.getElementById("RequestTypeValidation").innerHTML = "Ju lutem zgjidhni llojin e kërkesës!";
+            valid = false;
+
+        }
+        else {
+            document.getElementById("IDHD_Request_Type").classList.remove("invalid");
+            document.getElementById("RequestTypeValidation").innerHTML = "";
+        }
+        return valid;
+    }
+
+    function ProgramValidation() {
+        valid = true;
+
+        if (document.getElementById("IDHD_Program").value == null || document.getElementById("IDHD_Program").value == "") {
+
+            document.getElementById("ProgramValidation").innerHTML = "Ju lutem zgjidhni një program!";
+            valid = false;
+
+        }
+        else {
+            document.getElementById("IDHD_Program").classList.remove("invalid");
+            document.getElementById("ProgramValidation").innerHTML = "";
+        }
+        return valid;
+    }
+
+    function TitleValidation() {
+        valid = true;
+
+        if (document.getElementById("Title").value == null || document.getElementById("Title").value == "") {
+            document.getElementById("TitleValidation").innerHTML = "Ju lutem plotësoni fushën 'Titulli i kërkesës'!";
+            valid = false;
+
+
+        }
+        else {
+            document.getElementById("Title").classList.remove("invalid");
+            document.getElementById("TitleValidation").innerHTML = "";
+        }
+        return valid;
+    }
+    function DescriptionValidation() {
+        valid = true;
+
+        if (document.getElementById("Descriptions").value == null || document.getElementById("Descriptions").value == "") {
+            document.getElementById("DescriptionValidation").innerHTML = "Ju lutem plotësoni fushën 'Përshkrimi i kërkesës'!";
+            valid = false;
+
+        }
+        else {
+            document.getElementById("Descriptions").classList.remove("invalid");
+            document.getElementById("DescriptionValidation").innerHTML = "";
+        }
+        return valid;
+    }
+
+    function ReceptionValidation() {
+        valid = true; var dateformat = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+
+        if (document.getElementById("Reception_Date").value == null || document.getElementById("Reception_Date").value == "") {
+            document.getElementById("ReceptionValidation").innerHTML = "Ju lutem plotësoni fushën 'Datën e marrjes së kërkesës'!";
+            valid = false;
+
+        }
+        else if (!document.getElementById("Reception_Date").value.match(dateformat)) {
+            document.getElementById("ReceptionValidation").innerHTML = "Data e marrjes së kërkesës nuk është e saktë!";
+            valid = false;
+        }
+        else {
+            document.getElementById("Reception_Date").classList.remove("invalid");
+            document.getElementById("ReceptionValidation").innerHTML = "";
+        }
+        return valid;
+    }
+
+    function StatusValidation() {
+        valid = true;
+
+        if (document.getElementById("Current_Status").value == null || document.getElementById("Current_Status").value == "") {
+            document.getElementById("StatusValidation").innerHTML = "Ju lutem zgjidhni statusin e kërkesës!";
+            valid = false;
+
+
+        }
+        else {
+            document.getElementById("Current_Status").classList.remove("invalid");
+            document.getElementById("StatusValidation").innerHTML = "";
+        }
+        return valid;
+    }
+    function ChannelValidation() {
+        valid = true;
+
+        if (document.getElementById("IDHD_CommunicationChannel").value == null || document.getElementById("IDHD_CommunicationChannel").value == "") {
+            document.getElementById("ChannelValidation").innerHTML = "Ju lutem zgjidhni kanalin e komunikimit për kërkesën!";
+            valid = false;
+
+
+        }
+        else {
+            document.getElementById("IDHD_CommunicationChannel").classList.remove("invalid");
+            document.getElementById("ChannelValidation").innerHTML = "";
+        }
+        return valid;
+    }
+    //funksioni i validimit te email
+    function ValidateEmail() {
+        var valid = true;
+        var expr = /^([\w-\.]+)@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+        if (email.value == null || email.value == "") {
+            document.getElementById("emailValidation").innerHTML = "Ju lutem plotësoni fushën 'E-mail'!";
+
+            valid = false;
+            // console.log(expr.test(email));
+        }
+        else if (!expr.test(email.value)) {
+            document.getElementById("emailValidation").innerHTML = "Format jo i saktë! E-mail duhet të përmbajë shkronja, numra, '@@' dhe '.'";
+            valid = false;
+        }
+        else {
+            document.getElementById("emailValidation").innerHTML = "";
+            email.classList.remove("invalid");
+        }
+        return valid;
+
+
+    }
+
+    //funksioni i validimit te NID
+    //function ValidateNID() {
+    //    var valid = true, reg = /[A-Z][0-9]{8}[A-Z]+$/; ///[aAzZ][0-9]{8}[aAzZ]$/
+
+    //    if (NID.value == null || NID.value == "") {
+    //        document.getElementById("NIDValidation").innerHTML = "Ju lutem plotësoni fushën 'NID'!";
+    //        valid = false;
+    //    }
+
+    //    else if (!reg.test(NID.value)) {
+    //        document.getElementById("NIDValidation").innerHTML = "Format jo i saktë! NID duhet të përmbajë një shkronjë në fillim, 8 numra dhe një shkronjë në fund! ";
+    //        valid = false;
+    //    }
+    //    else {
+    //        document.getElementById("NIDValidation").innerHTML = "";
+    //        NID.classList.remove("invalid");
+
+    //    }
+    //    return valid;
+    //}
+
+    //funksioni i validimit te emrit
+    function ValidateFirstname() {
+        var valid = true; var re = /^[a-z ,.'-]+$/i;
+        //NID.value = NID.value.trim();
+        if (firstname.value == null || firstname.value == "") {
+            document.getElementById("NameValidation").innerHTML = "Ju lutem plotësoni fushën 'Emër'!";
+            valid = false;
+
+        }
+
+        else if (!re.test(firstname.value)) {
+            document.getElementById("NameValidation").innerHTML = "Emri nuk mund të përmbajë karaktere speciale!";
+            valid = false;;
+        }
+        else {
+            document.getElementById("NameValidation").innerHTML = "";
+            NID.classList.remove("invalid");
+        }
+        return valid;
+    }
+
+    function trim(str) {
+
+        return str.replace(/^\s+/g, '').trim();
+    }
+
+    function ValidateSurname() {
+        var valid = true; var re = /^[a-z ,.'-]+$/i;
+        if (surname.value == null || surname.value == "") {
+            document.getElementById("SurnameValidation").innerHTML = "Ju lutem plotësoni fushën 'Mbiemër'!";
+            valid = false;
+
+        }
+
+        else if (!re.test(surname.value)) {
+            document.getElementById("SurnameValidation").innerHTML = "Mbiemri nuk mund të përmbajë karaktere speciale!";
+            valid = false;
+        }
+        else {
+            document.getElementById("SurnameValidation").innerHTML = "";
+            NID.classList.remove("invalid");
+        }
+        return valid;
+    }
+
+    function ValidateTelephone() {
+        var valid = true;
+        var re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+        if (telephone.value == null || telephone.value == "") {
+            document.getElementById("TelephoneValidation").innerHTML = "Ju lutem plotësoni fushën 'Nr.Telefoni'!";
+            valid = false;
+        }
+
+        else if (!re.test(telephone.value)) {
+            document.getElementById("TelephoneValidation").innerHTML = "Format jo i saktë!!";
+            valid = false;
+        }
+        else {
+            document.getElementById("TelephoneValidation").innerHTML = "";
+            NID.classList.remove("invalid");
+        }
+        return valid;
+    }
+
+    function ValidateDocument() {
+        valid = true;
+        if (!file.value) {
+            valid = true;
+        }
+        else if (file.files[0].size > 2097152) {
+            document.getElementById("DocumentValidation").innerHTML = "Dokumenti duhet të jetë me permasë më të vogël se 2MB!";
+            valid = false;
+        }
+        else {
+            document.getElementById("DocumentValidation").innerHTML = "";
+
+        }
+        return valid;
+    }
+
+    function ValidateDate(t) {
+        var v = t;
+
+        if (v.match(/^\d{2}$/) !== null) {
+
+            t = v + '/';
+            document.getElementById("Reception_Date").value = t;
+            return;
+        }
+        else if (v.match(/^\d{2}\/\d{2}$/) !== null) {
+
+            t = v + '/';
+            document.getElementById("Reception_Date").value = t;
+            return;
+
+        }
+    }
+    //shfaqja e alert ne rast se modifikohet kerkesa pasi jane validuar fushat e formes
+    var displayAlert = function () {
+       // var Request_Id=$('#requestID').val();
+        $("#saveBtn").on("click", function (e) {
+            e.preventDefault();
+            if (validateSubmit()) {
+                swal({
+                    title: "Sukses!",
+                    text: "Kërkesa u modifikua!",
+                    icon: "success",
+
+                }).then(function (confirm) {
+                    if (confirm) {
+                        $('#CreateRequestForm').submit();
+                        //var status = $("#Current_Status").val();
+                        //var url = "/Dashboard/Index?status=" + status;
+                        //window.location.href = url;
+                    }
+
+                });
+            }
+        });
+    }
+
+    //validim i seksionit te dyte te formes
+    function validateSubmit() {
+        var valid = true;
+        if (!RequestTypeValidation() || !ProgramValidation() || !TitleValidation() || !DescriptionValidation() || !ReceptionValidation() || !StatusValidation() || !ChannelValidation() || !ValidateDocument()) //!ChannelValidation() || !StatusValidation()
+            valid = false;
+        return valid;
+    }
+
+    //funksioni i datepicker ne shqip
+    $(function () {
+        var currentYear = (new Date).getFullYear();
+        var currentMonth = (new Date).getMonth();
+        var currentDay = (new Date).getDate();
+        $("#Reception_Date").datepicker({ dateFormat: 'dd/mm/yy', minDate: new Date(1900, 12, 1), maxDate: new Date(currentYear, currentMonth, currentDay) });
+    });
+
+
+
+    function fixStepIndicator(n) {
+        // This function removes the "active" class of all steps...
+        var i, x = document.getElementsByClassName("step");
+        for (i = 0; i < x.length; i++) {
+            x[i].className = x[i].className.replace(" active", "");
+        }
+        //... and adds the "active" class on the current step:
+        x[n].className += " active";
+    }
+
+    //funksioni i shfaqjes se emrit te dokumentit te perzgjedhur
+    $("#RequestDocument").change(function () {
+        filename = this.files[0].name;
+        if (filename != null || filename != '') {
+            //filename = this.files[0].name
+            console.log(filename);
+            $("#RequestDocument_Text").html(filename);
+        }
+    });
+
+    //shfaqja e alert qe shtimi u be me sukses
+    $("#submitBtn").on("click", function (e) {
+        e.preventDefault();
+
+        swal({
+            title: "Sukses!",
+            text: "Kërkesa u shtua!",
+            icon: "success",
+
+        }).then(function (confirm) {
+            if (confirm) {
+                $('#CreateRequestForm').submit();
+            }
+        });
+    });
+
+</script>
+
+<script>
+    //funksioni i selektimit automatik te dropdown te statusit nqs selektohet dropdown i pergjegjesit
+    $("#IDHD_Responsible").on('change', function () {
+        if ($('#IDHD_Responsible').val() != '')
+            $("#Current_Status").val("Në proces");
+        else $("#Current_Status").val("Regjistruar");
+    });
+
+</script>
+<style>
+    #shikoListen {
+        width: 15%
+    }
+    /* Mark input boxes that gets an error on validation: */
+    input.invalid {
+        background-color: #ffdddd;
+    }
+
+    /* Hide all steps by default: */
+    .tab {
+        display: none;
+    }
+
+    /* Make circles that indicate the steps of the form: */
+    .step {
+        height: 15px;
+        width: 15px;
+        margin: 0 2px;
+        background-color: #bbbbbb;
+        border: none;
+        border-radius: 50%;
+        display: inline-block;
+        opacity: 0.5;
+    }
+
+        .step.active {
+            opacity: 1;
+        }
+
+        /* Mark the steps that are finished and valid: */
+        .step.finish {
+            background-color: #6C2BD9;
+        }
+
+    .container {
+        width: 65%
+    }
+
+    #saveBtn {
+        width: 150px;
+        padding: 10px;
+        display: inline;
+        float: right;
+    }
+
+    #prevBtn, #nextBtn {
+        width: 150px;
+    }
+    /*        select option[value=""] {
+                        color: red;
+                    }*/
+    .col-md-10 {
+        max-width: 100%;
+        padding: 0px !important;
+    }
+
+    .col-md-2 {
+        max-width: 30%
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+        a:hover {
+            color: black;
+            text-decoration: none;
+        }
+
+    #RequestDocument_Text {
+        margin-top: 5px;
+        margin-left: 20px;
+    }
+
+    .reqired_star {
+        color: red
+    }
+
+    .error-msg {
+        font-size: 12.5px !important
+    }
+
+    #Reception_Date, #Registration_Date {
+        text-align: right;
+    }
+    .swal-button {
+        background-color: #7E3AF2
+    }
+        .swal-button:hover, .swal-button:active, swal-button--confirm:hover {
+            background-color: #9257f8!important
+        }
+</style>

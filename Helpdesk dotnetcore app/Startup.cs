@@ -1,15 +1,15 @@
-using Helpdesk_dotnetcore_app.Data;
+using AutoMapper;
+using Helpdesk.Core.Interfaces;
+using Helpdesk.Infrastructure.Data;
+using Helpdesk.Infrastructure.Services.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Helpdesk_dotnetcore_app
 {
@@ -25,15 +25,44 @@ namespace Helpdesk_dotnetcore_app
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                    options.SlidingExpiration = true;
+                    options.AccessDeniedPath = "/Account/Login";
+                });
+
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString
                 ("defaultConnectionString")));
             services.AddControllersWithViews();
-            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IDashboardRepository, DashboardRepository>();
+            var mapperConfig = new MapperConfiguration(mc => {
+                mc.AddProfile(new AutoMapperProfile());
+            });
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddScoped<IMapper>(c => mapper);
+            //services.AddAutoMapper(typeof(Startup));
+            //services.AddScoped(c => new MapperConfiguration(cfg =>
+            //{
+            //    cfg.AddProfile<AutoMapperProfile>();
+            //}));
+
+            //services.AddScoped<IMapper>(c =>
+            //{
+            //    //This resolves a new context that can be used later.
+            //    var config = c.GetService<MapperConfiguration>();
+            //    return config.CreateMapper();
+            //});
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext db)
         {
+            db.Database.Migrate();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -47,6 +76,11 @@ namespace Helpdesk_dotnetcore_app
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseSession();
+
             app.UseRouting();
 
             app.UseAuthorization();
@@ -55,7 +89,7 @@ namespace Helpdesk_dotnetcore_app
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Dashboard}/{action=Index}/{id?}");
             });
         }
     }

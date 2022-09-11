@@ -5,20 +5,24 @@ using System.IO;
 using System.Threading.Tasks;
 using Helpdesk.Core.Interfaces;
 using Helpdesk.Core.ViewModels.Dashboard;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Helpdesk.Controllers
 {
-    [CheckSession]
+    [Authorize]
     public class DashboardController : Controller
     {
         private IDashboardRepository _dashboardRepository;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public DashboardController(IDashboardRepository dashboardRepository)
+        public DashboardController(IDashboardRepository dashboardRepository, IWebHostEnvironment webHostEnvironment)
         {
             _dashboardRepository = dashboardRepository;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Dashboard
@@ -72,21 +76,21 @@ namespace Helpdesk.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(ClientRequestViewModel requestVM, HttpPostedFileBase RequestDocument)
+        public async Task<ActionResult> Create(ClientRequestViewModel requestVM/*, HttpPostedFileBase RequestDocument*/)
         {
             if (ModelState.IsValid)
             {
-                byte[] bytes = null;
-                if (RequestDocument != null)
-                {
-                    using (BinaryReader br = new BinaryReader(RequestDocument.InputStream))
-                    {
-                        bytes = br.ReadBytes(RequestDocument.ContentLength);
-                    }
-                }
-                requestVM.Bytes = bytes;
-                requestVM.UserId = (int?)HttpContext.Session.GetInt32("ID");
-                var success = await _dashboardRepository.CreateRequestAsync(requestVM);
+                //byte[] bytes = null;
+                //if (RequestDocument != null)
+                //{
+                //    using (BinaryReader br = new BinaryReader(RequestDocument.InputStream))
+                //    {
+                //        bytes = br.ReadBytes(RequestDocument.ContentLength);
+                //    }
+                //}
+                //requestVM.Bytes = bytes;
+                //requestVM.UserId = (int?)HttpContext.Session.GetInt32("ID");
+                //var success = await _dashboardRepository.CreateRequestAsync(requestVM);
                 return RedirectToAction("Index");
             }
             await SetCreateData();
@@ -106,7 +110,8 @@ namespace Helpdesk.Controllers
                     {
                         var document = (request).Document_Content;
 
-                        var FileVirtualPath = Server.MapPath("~/Files/") + "Dokument kerkese.pdf";
+                        string webRootPath = _webHostEnvironment.WebRootPath;
+                        var FileVirtualPath = Path.Combine(webRootPath, "~/Files/Dokument kerkese.pdf");
                         if (document != null)
                         {
                             return File(document, "application/pdf", Path.GetFileName(FileVirtualPath));
@@ -191,20 +196,20 @@ namespace Helpdesk.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(ClientRequestViewModel hD_Request, HttpPostedFileBase RequestDocument)
+        public async Task<ActionResult> Edit(ClientRequestViewModel hD_Request/*, HttpPostedFileBase RequestDocument*/)
         {
             if (HttpContext.Session.GetString("ID") != null)
             {
                 //HD_Request request = new HD_Request();
-                byte[] bytes = null;
-                if (RequestDocument != null)
-                {
-                    using (BinaryReader br = new BinaryReader(RequestDocument.InputStream))
-                    {
-                        bytes = br.ReadBytes(RequestDocument.ContentLength);
-                    }
-                }
-                hD_Request.Bytes = bytes;
+                //byte[] bytes = null;
+                //if (RequestDocument != null)
+                //{
+                //    using (BinaryReader br = new BinaryReader(RequestDocument.InputStream))
+                //    {
+                //        bytes = br.ReadBytes(RequestDocument.ContentLength);
+                //    }
+                //}
+                //hD_Request.Bytes = bytes;
 
                 if (hD_Request.Current_Status != "Përfunduar")
                 {

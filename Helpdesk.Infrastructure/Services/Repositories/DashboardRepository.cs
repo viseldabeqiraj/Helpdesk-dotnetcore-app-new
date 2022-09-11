@@ -64,7 +64,8 @@ namespace Helpdesk.Infrastructure.Services.Repositories
                 .Include(h => h.CommunicationChannel)
                 .Include(h => h.Program)
                 .Include(h => h.RequestType)
-                .Include(h => h.Client);
+                .Include(h => h.Client)
+                .AsQueryable();
 
             var role = await _dbContext.User
                 .Where(u => u.Id == getRequestsDto.UserId)
@@ -74,12 +75,12 @@ namespace Helpdesk.Infrastructure.Services.Repositories
             {
                 if (role == 1)
                 {
-                    query = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Request, Client>)_dbContext.Request
+                    query = _dbContext.Request
                         .Where(r => r.OperatorId == getRequestsDto.UserId);
                 }
                 else if (role == 2)
                 {
-                    query = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Request, Client>)_dbContext.Request.Where
+                    query = _dbContext.Request.Where
                         (r => r.ResponsibleId == getRequestsDto.UserId);
                 }
             }
@@ -87,16 +88,19 @@ namespace Helpdesk.Infrastructure.Services.Repositories
             {
                 if (role == 1)
                 {
-                    query = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Request, Client>)_dbContext.Request.Where
+                    query = _dbContext.Request.Where
                         (r => r.Current_Status == getRequestsDto.Status && r.OperatorId == getRequestsDto.UserId);
                 }
                 else if (role == 2)
                 {
-                    query = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Request, Client>)_dbContext.Request.Where
+                    query = _dbContext.Request.Where
                         (r => r.Current_Status == getRequestsDto.Status && r.ResponsibleId == getRequestsDto.UserId);
                 }
             }
 
+            return new List<RequestViewModel>();
+
+            //TODO fix automapper
             var list = await query
                 .ProjectTo<RequestViewModel>(_mapper.ConfigurationProvider)
                 .ToListAsync();
