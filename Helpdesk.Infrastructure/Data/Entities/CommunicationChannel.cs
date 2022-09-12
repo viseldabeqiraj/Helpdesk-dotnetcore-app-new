@@ -9,7 +9,7 @@ namespace Helpdesk.Infrastructure.Data.Entities
 {
     public class CommunicationChannel
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string CommunicationChannelValue { get; set; }
 

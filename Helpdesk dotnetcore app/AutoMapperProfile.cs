@@ -14,8 +14,8 @@ namespace Helpdesk_dotnetcore_app
             CreateMap<CommunicationChannelViewModel, CommunicationChannel>();
             CreateMap<CommunicationChannel, CommunicationChannelViewModel>();
 
-            CreateMap<ProgramViewModel, Program>();
-            CreateMap<Program, ProgramViewModel>();
+            CreateMap<ProgramViewModel, Helpdesk.Infrastructure.Data.Entities.Program>();
+            CreateMap<Helpdesk.Infrastructure.Data.Entities.Program, ProgramViewModel>();
 
             CreateMap<RequestTypeViewModel, RequestType>();
             CreateMap<RequestType, RequestTypeViewModel>();

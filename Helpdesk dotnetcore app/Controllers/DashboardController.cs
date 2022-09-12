@@ -89,8 +89,8 @@ namespace Helpdesk.Controllers
                 //    }
                 //}
                 //requestVM.Bytes = bytes;
-                //requestVM.UserId = (int?)HttpContext.Session.GetInt32("ID");
-                //var success = await _dashboardRepository.CreateRequestAsync(requestVM);
+                requestVM.UserId = (int?)HttpContext.Session.GetInt32("ID");
+                var success = await _dashboardRepository.CreateRequestAsync(requestVM);
                 return RedirectToAction("Index");
             }
             await SetCreateData();
@@ -146,12 +146,12 @@ namespace Helpdesk.Controllers
             }
             if (hD_Request.Current_Status != "Përfunduar")
             {
-                hd_Client_Request.NID = hD_Request.Client.NID;
-                hd_Client_Request.FirstName = hD_Request.Client.FirstName;
-                hd_Client_Request.Surname = hD_Request.Client.Surname;
-                hd_Client_Request.Email = hD_Request.Client.Email;
-                hd_Client_Request.Telephone_Nr = hD_Request.Client.Telephone_Nr;
-                hd_Client_Request.IDHD_Client = await _dashboardRepository.GetClientIdByNIDAsync(hD_Request.Client.NID);//hD_Request.IDHD_Client;
+                hd_Client_Request.NID = hD_Request.Client?.NID;
+                hd_Client_Request.FirstName = hD_Request.Client?.FirstName;
+                hd_Client_Request.Surname = hD_Request.Client?.Surname;
+                hd_Client_Request.Email = hD_Request.Client?.Email;
+                hd_Client_Request.Telephone_Nr = hD_Request.Client?.Telephone_Nr;
+                hd_Client_Request.IDHD_Client = await _dashboardRepository.GetClientIdByNIDAsync(hD_Request.Client?.NID);//hD_Request.IDHD_Client;
                 hd_Client_Request.IDHD_Request_Type = hD_Request.RequestTypeId;
                 hd_Client_Request.IDHD_Program = hD_Request.ProgramId;
                 hd_Client_Request.Title = hD_Request.Title;
@@ -217,8 +217,13 @@ namespace Helpdesk.Controllers
                     {
 
                         var success = await _dashboardRepository.EditRequestAsync(hD_Request);
-                        TempData["EditRequestID"] = hD_Request.IDHD_Request;
-                        return RedirectToAction("Index", new { status = hD_Request.Current_Status });
+
+                        if (success)
+                        {
+                            TempData["EditRequestID"] = hD_Request.IDHD_Request;
+                            return RedirectToAction("Index", new { status = hD_Request.Current_Status });
+                        }
+
                         // ViewBag.EditRequestID = request.IDHD_Request;
                     }
 

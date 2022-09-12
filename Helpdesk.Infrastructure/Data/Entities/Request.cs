@@ -10,7 +10,7 @@ namespace Helpdesk.Infrastructure.Data.Entities
 {
     public class Request
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int? RequestTypeId { get; set; }
         public int? ProgramId { get; set; }

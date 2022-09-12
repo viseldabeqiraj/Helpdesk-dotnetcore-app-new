@@ -9,7 +9,7 @@ namespace Helpdesk.Infrastructure.Data.Entities
 {
     public class Response
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int? RequestId { get; set; }
         public string Response_Content { get; set; }

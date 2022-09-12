@@ -22,7 +22,9 @@ namespace Helpdesk.Infrastructure.Migrations
             modelBuilder.Entity("Helpdesk.Infrastructure.Data.Entities.Client", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -47,7 +49,9 @@ namespace Helpdesk.Infrastructure.Migrations
             modelBuilder.Entity("Helpdesk.Infrastructure.Data.Entities.CommunicationChannel", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CommunicationChannelValue")
                         .HasColumnType("nvarchar(max)");
@@ -60,7 +64,9 @@ namespace Helpdesk.Infrastructure.Migrations
             modelBuilder.Entity("Helpdesk.Infrastructure.Data.Entities.Program", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -73,7 +79,9 @@ namespace Helpdesk.Infrastructure.Migrations
             modelBuilder.Entity("Helpdesk.Infrastructure.Data.Entities.Request", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("ClientId")
                         .HasColumnType("int");
@@ -141,7 +149,9 @@ namespace Helpdesk.Infrastructure.Migrations
             modelBuilder.Entity("Helpdesk.Infrastructure.Data.Entities.RequestType", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");
@@ -154,7 +164,9 @@ namespace Helpdesk.Infrastructure.Migrations
             modelBuilder.Entity("Helpdesk.Infrastructure.Data.Entities.Response", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("RequestId")
                         .HasColumnType("int");
@@ -180,7 +192,9 @@ namespace Helpdesk.Infrastructure.Migrations
             modelBuilder.Entity("Helpdesk.Infrastructure.Data.Entities.Role", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -193,7 +207,9 @@ namespace Helpdesk.Infrastructure.Migrations
             modelBuilder.Entity("Helpdesk.Infrastructure.Data.Entities.User", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
@@ -226,7 +242,9 @@ namespace Helpdesk.Infrastructure.Migrations
             modelBuilder.Entity("Helpdesk.Infrastructure.Data.Entities.UserRole", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("RoleId")
                         .HasColumnType("int");

@@ -36,6 +36,7 @@ namespace Helpdesk.Infrastructure.Services.Repositories
                 .User
                 .Where(u => u.Username == loginDto.Username && u.Password == loginDto.Password)
                 .Include(u => u.UserRoles)
+                .ThenInclude(u => u.Role)
                 .FirstOrDefaultAsync();
 
             if (user == null)

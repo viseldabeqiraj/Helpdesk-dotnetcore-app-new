@@ -395,10 +395,10 @@
             valid = false;
 
         }
-        else if (!document.getElementById("Reception_Date").value.match(dateformat)) {
+      @*  else if (!document.getElementById("Reception_Date").value.match(dateformat)) {
             document.getElementById("ReceptionValidation").innerHTML = "Data e marrjes së kërkesës nuk është e saktë!";
             valid = false;
-        }
+        }*@
         else {
             document.getElementById("Reception_Date").classList.remove("invalid");
             document.getElementById("ReceptionValidation").innerHTML = "";
@@ -614,7 +614,8 @@
         var currentYear = (new Date).getFullYear();
         var currentMonth = (new Date).getMonth();
         var currentDay = (new Date).getDate();
-        $("#Reception_Date").datepicker({ dateFormat: 'dd/mm/yy', minDate: new Date(1900, 12, 1), maxDate: new Date(currentYear, currentMonth, currentDay) });
+        @*$("#Reception_Date").datepicker({ dateFormat: 'dd/mm/yy', minDate: new Date(1900, 12, 1), maxDate: new Date(currentYear, currentMonth, currentDay) });*@
+        $("#Reception_Date").datepicker({ minDate: new Date(1900, 12, 1), maxDate: new Date(currentYear, currentMonth, currentDay) });
     });
 
 

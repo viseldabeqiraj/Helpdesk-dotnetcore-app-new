@@ -98,9 +98,6 @@ namespace Helpdesk.Infrastructure.Services.Repositories
                 }
             }
 
-            return new List<RequestViewModel>();
-
-            //TODO fix automapper
             var list = await query
                 .ProjectTo<RequestViewModel>(_mapper.ConfigurationProvider)
                 .ToListAsync();
@@ -142,16 +139,32 @@ namespace Helpdesk.Infrastructure.Services.Repositories
 
         public async Task<bool> CreateRequestAsync(ClientRequestViewModel clientRequestViewModel)
         {
-            var check = await _dbContext.Client
-                .Where(s => s.NID == clientRequestViewModel.NID).ToListAsync();
+            var hasClient = await _dbContext.Client
+                .AnyAsync(s => s.NID == clientRequestViewModel.NID);
 
             var req = new Request();
             var client = new Client();
 
-            req.ClientId = await _dbContext.Client
-                .Where(s => s.NID == clientRequestViewModel.NID)
-                .Select(s => s.Id)
-                .FirstOrDefaultAsync();
+            if (hasClient)
+            {
+                var clientId = await _dbContext.Client
+                    .Where(s => s.NID == clientRequestViewModel.NID)
+                    .Select(s => s.Id)
+                    .FirstOrDefaultAsync();
+                req.ClientId = clientId;
+            }
+            else
+            {
+                client.NID = clientRequestViewModel.NID;
+                client.FirstName = clientRequestViewModel.FirstName;
+                client.Surname = clientRequestViewModel.Surname;
+                client.Email = clientRequestViewModel.Email;
+                client.Telephone_Nr = clientRequestViewModel.Telephone_Nr;
+                _dbContext.Client.Add(client);
+                await _dbContext.SaveChangesAsync();
+                req.ClientId = client.Id;
+            }
+
             req.RequestTypeId = clientRequestViewModel.IDHD_Request_Type;
             req.ProgramId = clientRequestViewModel.IDHD_Program;
             req.Title = clientRequestViewModel.Title;
@@ -168,20 +181,7 @@ namespace Helpdesk.Infrastructure.Services.Repositories
             req.ResponsibleId = clientRequestViewModel.IDHD_Responsible;
             req.OperatorId = clientRequestViewModel.UserId;
 
-            if (check.Count == 0)
-            {
-                client.NID = clientRequestViewModel.NID;
-                client.FirstName = clientRequestViewModel.FirstName;
-                client.Surname = clientRequestViewModel.Surname;
-                client.Email = clientRequestViewModel.Email;
-                client.Telephone_Nr = clientRequestViewModel.Telephone_Nr;
-            }
-
             _dbContext.Request.Add(req);
-            if (client != null)
-            {
-                _dbContext.Client.Add(client);
-            }
 
             return await _dbContext.SaveChangesAsync() > 0;
         }
@@ -227,8 +227,6 @@ namespace Helpdesk.Infrastructure.Services.Repositories
 
         public async Task<bool> EditRequestAsync(ClientRequestViewModel hD_Request)
         {
-            var request = await GetRequestAsync(hD_Request.IDHD_Request);
-
             var client = await _dbContext.Client
                 .Where(c => c.NID == hD_Request.NID)
                 .FirstOrDefaultAsync();
@@ -238,6 +236,12 @@ namespace Helpdesk.Infrastructure.Services.Repositories
             client.Surname = hD_Request.Surname;
             client.Email = hD_Request.Email;
             client.Telephone_Nr = hD_Request.Telephone_Nr;
+
+            var request = await _dbContext
+                .Request
+                .Where(r => r.Id == hD_Request.IDHD_Request)
+                .FirstOrDefaultAsync();
+
             request.RequestTypeId = hD_Request.IDHD_Request_Type;
             request.ProgramId = hD_Request.IDHD_Program;
             request.Title = hD_Request.Title;
@@ -259,7 +263,7 @@ namespace Helpdesk.Infrastructure.Services.Repositories
 
         public async Task<RequestResponseViewModel> GetResponseAsync(int? id)
         {
-            var hD_Request = await _dbContext.Request.FirstOrDefaultAsync(r => r.Id == id);
+            var hD_Request = await _dbContext.Request.Include(r => r.Client).FirstOrDefaultAsync(r => r.Id == id);
 
             if (hD_Request == null)
                 return null;
@@ -313,7 +317,7 @@ namespace Helpdesk.Infrastructure.Services.Repositories
                        {
                            Responsible = u.FirstName
                        }).FirstOrDefault();
-            hd_Client_Request.Responsible = res.Responsible;
+            hd_Client_Request.Responsible = res?.Responsible;
 
             hd_Client_Request.Title = hD_Request.Title;
             hd_Client_Request.Descriptions = hD_Request.Descriptions;

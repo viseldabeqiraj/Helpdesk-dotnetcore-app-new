@@ -9,7 +9,7 @@ namespace Helpdesk.Infrastructure.Data.Entities
 {
     public class Program
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Title { get; set; }
 

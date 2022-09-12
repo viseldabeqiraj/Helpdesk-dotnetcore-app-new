@@ -63,12 +63,15 @@ namespace Helpdesk.Controllers
                     //Session["ID"] = user.Id;
                     //return RedirectToAction("Index", "Dashboard");
 
+                    var roles = string.Join(',', user.Roles);
+
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, user.Username),
                         new Claim("FullName", user.FirstName + " " + user.Surname),
                         new Claim("Username", user.Username),
                         new Claim("ID", user.Id.ToString()),
+                        new Claim(ClaimTypes.Role, roles)
                     };
 
                     var claimsIdentity = new ClaimsIdentity(

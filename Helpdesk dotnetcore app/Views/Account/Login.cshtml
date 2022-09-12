@@ -10,11 +10,12 @@
 @*Start of layout*@
 
 <!DOCTYPE html>
-<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+<html @*x-data="data()" lang="en"*@>
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - Helpdesk Dashboard</title> <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Login - Helpdesk Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <link href="~/Content/tailwind.output.css" rel="stylesheet" />
@@ -50,7 +51,7 @@
                         <h1 class="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
                             Login
                         </h1>
-                        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, true,  new { @class = "form-horizontal", role = "form" }))
+                        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, true, new { @class = "form-horizontal", role = "form" }))
                         {
                             @Html.AntiForgeryToken()
 
@@ -73,9 +74,9 @@
                             <div class="form-group">
                                 <div class="col-md-offset-2 col-md-10">
                                     @*<div class="checkbox">
-                                            @Html.CheckBoxFor(m => m.RememberMe)
-                                            @Html.LabelFor(m => m.RememberMe, new { @class = "text-sm" })
-                                        </div>*@
+                                @Html.CheckBoxFor(m => m.RememberMe)
+                                @Html.LabelFor(m => m.RememberMe, new { @class = "text-sm" })
+                                </div>*@
                                 </div>
                             </div>
 
@@ -87,23 +88,26 @@
 
                             <hr class="my-8" />
 
-                            <div class="text-sm alert alert-danger" role="alert" style="color:red">
-                                <p id="loginMessage">@ViewBag.error</p>
-                            </div>
+                            @if (!string.IsNullOrEmpty(ViewBag.error))
+                            {
+                                <div class="text-sm alert alert-danger" role="alert" style="color:red">
+                                    <p id="loginMessage">@ViewBag.error</p>
+                                </div>
+                            }
 
                             @*<p class="mt-4">
-                                @Html.ActionLink("Ke harruar fjalëkalimin?", "ForgotPassword", "Account", null,
-                               new { @class = "text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline" })
+                        @Html.ActionLink("Ke harruar fjalëkalimin?", "ForgotPassword", "Account", null,
+                        new { @class = "text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline" })
 
-                            </p>*@
+                        </p>*@
                             @*<p class="mt-1">
 
-                                @Html.ActionLink("Regjistrohu si përdorues i ri", "Register", "Account", null,
-                               new { @class = "text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline" })
-                            </p>*@
+                        @Html.ActionLink("Regjistrohu si përdorues i ri", "Register", "Account", null,
+                        new { @class = "text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline" })
+                        </p>*@
                             @*<section id="socialLoginForm">
-                                    @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
-                                </section>*@
+                        @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+                        </section>*@
                         }
                     </div>
                 </div>
@@ -115,7 +119,7 @@
 <script>
     function LoginMessage() {
         var message = document.getElementById("loginMessage");
-               if (document.getElementById("Username").value != null ) {
+        if (document.getElementById("Username").value != null) {
             document.getElementById("loginMessage").style.display = "none";
 
         }
@@ -128,11 +132,11 @@
             document.getElementById("UsernameMsg").style.display = "none";
         }
         else {
-       document.getElementById("UsernameMsg").style.display = "inline-block";
+            document.getElementById("UsernameMsg").style.display = "inline-block";
         }
 
 
-     }
+    }
     function PassowrdMessage() {
         if (document.getElementById("Password").value != null || document.getElementById("Password").value != '') {
             document.getElementById("PasswordMsg").style.display = "none";

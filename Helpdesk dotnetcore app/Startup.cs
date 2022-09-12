@@ -2,14 +2,17 @@ using AutoMapper;
 using Helpdesk.Core.Interfaces;
 using Helpdesk.Infrastructure.Data;
 using Helpdesk.Infrastructure.Services.Repositories;
+using Helpdesk_dotnetcore_app.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Linq;
 
 namespace Helpdesk_dotnetcore_app
 {
@@ -38,23 +41,7 @@ namespace Helpdesk_dotnetcore_app
             services.AddControllersWithViews();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IDashboardRepository, DashboardRepository>();
-            var mapperConfig = new MapperConfiguration(mc => {
-                mc.AddProfile(new AutoMapperProfile());
-            });
-            IMapper mapper = mapperConfig.CreateMapper();
-            services.AddScoped<IMapper>(c => mapper);
-            //services.AddAutoMapper(typeof(Startup));
-            //services.AddScoped(c => new MapperConfiguration(cfg =>
-            //{
-            //    cfg.AddProfile<AutoMapperProfile>();
-            //}));
-
-            //services.AddScoped<IMapper>(c =>
-            //{
-            //    //This resolves a new context that can be used later.
-            //    var config = c.GetService<MapperConfiguration>();
-            //    return config.CreateMapper();
-            //});
+            services.AddAutoMapper(typeof(Program).Assembly);
             services.AddSession();
         }
 
@@ -62,6 +49,7 @@ namespace Helpdesk_dotnetcore_app
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext db)
         {
             db.Database.Migrate();
+            db.Seed();
 
             if (env.IsDevelopment())
             {
@@ -73,6 +61,7 @@ namespace Helpdesk_dotnetcore_app
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -84,6 +73,23 @@ namespace Helpdesk_dotnetcore_app
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.Use(async (context, next) =>
+            {
+                if (context.User != null && context.User.Claims.Any())
+                {
+                    var fullName = context.User.Claims.FirstOrDefault(c => c.Type == "FullName");
+                    var username = context.User.Claims.FirstOrDefault(c => c.Type == "Username");
+                    var id = context.User.Claims.FirstOrDefault(c => c.Type == "ID");
+
+                    int.TryParse(id?.Value, out int idInt);
+
+                    context.Session.SetString("FullName", fullName?.Value);
+                    context.Session.SetString("Username", username?.Value);
+                    context.Session.SetInt32("ID", idInt);
+                }
+                await next.Invoke();
+            });
 
             app.UseEndpoints(endpoints =>
             {

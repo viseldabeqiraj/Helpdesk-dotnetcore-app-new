@@ -14,7 +14,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create account - Helpdesk Dashboard</title> <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Create account - Helpdesk Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <link href="~/Content/tailwind.output.css" rel="stylesheet" />
@@ -77,13 +78,16 @@
                             </div>
                             <hr class="my-8" />
 
-                            <div class="text-sm alert alert-danger" role="alert" style="color:red">
-                                <p>@ViewBag.error</p>
-                            </div>
+                            @if (!string.IsNullOrEmpty(ViewBag.error))
+                            {
+                                <div class="text-sm alert alert-danger" role="alert" style="color:red">
+                                    <p>@ViewBag.error</p>
+                                </div>
+                            }
 
                             <p class="mt-4">
                                 @Html.ActionLink("Ke një llogari ekzistuese? Hyr", "Login", "Account", null,
-                               new { @class = "text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline" })
+                            new { @class = "text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline" })
                             </p>
                         }
                     </div>

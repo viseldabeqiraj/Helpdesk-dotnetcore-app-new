@@ -9,7 +9,7 @@ namespace Helpdesk.Infrastructure.Data.Entities
 {
     public class RequestType
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Category { get; set; }
 

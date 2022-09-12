@@ -26,7 +26,7 @@
 		dayNamesShort: ["Di", "Hë", "Ma", "Më", "En", "Pr", "Sh"],
 		dayNamesMin: ["Di", "Hë", "Ma", "Më", "En", "Pr", "Sh"],
 		weekHeader: "Ja",
-		dateFormat: "dd.mm.yy",
+		//dateFormat: "dd.mm.yy",
 		firstDay: 1,
 		isRTL: false,
 		showMonthAfterYear: false,
